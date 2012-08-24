@@ -36,6 +36,7 @@
             control : $('<div class="colorPicker-picker">&nbsp;</div>'),
             palette : $('<div id="colorPicker_palette" class="colorPicker-palette" />'),
             swatch  : $('<div class="colorPicker-swatch">&nbsp;</div>'),
+            tSwatch  : $('<div class="colorPicker-swatch">&nbsp;</div>'),
             hexLabel: $('<label for="colorPicker_hex">Hex</label>'),
             hexField: $('<input type="text" id="colorPicker_hex" />')
         },
@@ -59,7 +60,8 @@
                 newHexLabel  = templates.hexLabel.clone(),
                 newHexField  = templates.hexField.clone(),
                 paletteId    = newPalette[0].id,
-                swatch;
+                swatch,
+                tSwatch;
 
 
             /**
@@ -77,6 +79,22 @@
                 }
                 swatch.appendTo(newPalette);
             });
+
+            if (options && options.extraColors) {
+                swatch.after('<div style="margin-bottom:5px;">&nbsp;</div><div style="text-decoration:underline;">Template Colors</div>');
+                $.each(options.extraColors, function (i) {
+                    tSwatch = templates.tSwatch.clone();
+
+                    if (options.extraColors[i] === transparent) {
+                        tSwatch.addClass(transparent).text('X');
+                        $.fn.colorPicker.bindPalette(newHexField, tSwatch, transparent);
+                    } else {
+                        tSwatch.css("background-color", "#" + this);
+                        $.fn.colorPicker.bindPalette(newHexField, tSwatch);
+                    }
+                    tSwatch.appendTo(newPalette);
+                });
+            }
 
             newHexLabel.attr('for', 'colorPicker_hex-' + cItterate);
 
